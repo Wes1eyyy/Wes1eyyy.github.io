@@ -259,6 +259,81 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
 
+    const setupLanguageSwitcher = () => {
+        const languageButtons = document.querySelectorAll('.lang-btn');
+        const translatableNodes = document.querySelectorAll('[data-i18n]');
+
+        if (!languageButtons.length || !translatableNodes.length) {
+            return;
+        }
+
+        const translations = {
+            en: {
+                'nav.about': 'About',
+                'nav.intro': 'Intro',
+                'nav.education': 'Education',
+                'nav.skills': 'Skills',
+                'nav.experience': 'Experience',
+                'nav.projects': 'Projects',
+                'hero.availability': 'Available for internship: Jun 2026 – Sep 2026 (3+ months)',
+                'contact.enResume': 'EN Resume',
+                'contact.cnResume': '中文简历下载',
+                'section.aboutMe': 'About Me',
+                'section.education': 'Education',
+                'section.skills': 'Skills',
+                'section.experience': 'Experience',
+                'section.projects': 'Projects'
+            },
+            zh: {
+                'nav.about': '首页',
+                'nav.intro': '简介',
+                'nav.education': '教育',
+                'nav.skills': '技能',
+                'nav.experience': '经历',
+                'nav.projects': '项目',
+                'hero.availability': '实习可入职时间：2026年6月 - 2026年9月（3个月以上）',
+                'contact.enResume': '英文简历',
+                'contact.cnResume': '中文简历下载',
+                'section.aboutMe': '关于我',
+                'section.education': '教育背景',
+                'section.skills': '技能',
+                'section.experience': '工作经历',
+                'section.projects': '项目经历'
+            }
+        };
+
+        const applyLanguage = (lang) => {
+            const dict = translations[lang] || translations.en;
+
+            translatableNodes.forEach((node) => {
+                const key = node.dataset.i18n;
+                if (dict[key]) {
+                    node.textContent = dict[key];
+                }
+            });
+
+            languageButtons.forEach((button) => {
+                button.classList.toggle('active', button.dataset.lang === lang);
+            });
+
+            document.documentElement.lang = lang === 'zh' ? 'zh-CN' : 'en';
+            document.title = lang === 'zh'
+                ? '徐嘉亿 - 个人网站'
+                : 'Jiayi (Wesley) Xu - Personal Website';
+
+            localStorage.setItem('siteLang', lang);
+        };
+
+        const initialLang = localStorage.getItem('siteLang') || 'en';
+        applyLanguage(initialLang);
+
+        languageButtons.forEach((button) => {
+            button.addEventListener('click', () => {
+                applyLanguage(button.dataset.lang || 'en');
+            });
+        });
+    };
+
     // Initialize all features
     createScrollProgress();
     setupCardHoverEffect();
@@ -268,6 +343,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setupSectionHeaders();
     setupSkillTags();
     setupContactLinks();
+    setupLanguageSwitcher();
 
     // Mobile setup
     if (window.innerWidth <= 768) {
